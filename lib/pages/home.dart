@@ -2,55 +2,40 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'widgets/shop_card.dart';
-import 'widgets/drawer.dart';
-import 'pages/home.dart';
+import 'package:shopping_devsoc/widgets/drawer.dart';
+import 'package:shopping_devsoc/widgets/shop_card.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shopping',
-      routes: {
-        '/': (context) => Home(),
-      }
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeState createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeState extends State<Home> {
 
   test() async {
+    print("hi");
     Response r = await get(Uri.parse('https://fakestoreapi.com/products'));
     List t = await jsonDecode(r.body);
+    // print(t[0]);
     return t;
   }
 
   @override
   void initState() {
     super.initState();
+    // test();
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: test(), // function where you call your api
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if( snapshot.connectionState == ConnectionState.waiting) {
-          return  Center(child: Text('Please wait its loading...'));
+      builder: (BuildContext context,
+          AsyncSnapshot snapshot) { // AsyncSnapshot<Your object type>
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: Text('Please wait its loading...'));
         }
         else {
           if (snapshot.hasError)
@@ -63,16 +48,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: Text(
                   'Shopping Devsoc',
                   style: TextStyle(
-                    color: Colors.black
+                      color: Colors.black
                   ),
                 ),
                 centerTitle: true,
                 backgroundColor: Colors.white54,
               ),
               body: ListView(
-                children: snapshot.data.map((a) => ShopCard(data: a)).toList().cast<Widget>(),
+                children: snapshot.data.map((a) => ShopCard(data: a))
+                    .toList()
+                    .cast<Widget>(),
               ),
-            );
+            ); // snapshot.data  :- get your object which is pass from your downloadData() function
         }
       },
     );
