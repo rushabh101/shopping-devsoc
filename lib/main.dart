@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'shop_card.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,15 +15,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shopping',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Shopping App for devsoc'),
@@ -31,15 +25,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -47,27 +32,59 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void test() async {
+  // late Map t;
+  // late List t;
 
-    Response r = await get(Uri.parse('https://jsonplaceholder.typicode.com/todos/1'));
-    print(r.body);
 
+  test() async {
+    print("hi");
+    Response r = await get(Uri.parse('https://fakestoreapi.com/products'));
+    List t = await jsonDecode(r.body);
+    // print(t[0]);
+    return t;
   }
 
   @override
+  void initState() {
+    super.initState();
+    // test();
+  }
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Text("HI"),
-      floatingActionButton: FloatingActionButton(
-        onPressed: test,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+    return FutureBuilder(
+      future: test(), // function where you call your api
+      builder: (BuildContext context, AsyncSnapshot snapshot) {  // AsyncSnapshot<Your object type>
+        if( snapshot.connectionState == ConnectionState.waiting){
+          return  Center(child: Text('Please wait its loading...'));
+        }else{
+          if (snapshot.hasError)
+            return Center(child: Text('Error: ${snapshot.error}'));
+          else
+            return Scaffold(
+              backgroundColor: Colors.grey[200],
+              appBar: AppBar(
+                title: Text('Shopping Devsoc'),
+                centerTitle: true,
+                backgroundColor: Colors.redAccent,
+              ),
+              body: ListView(
+                children: snapshot.data.map((a) => ShopCard(imgUrl: a['image'], title: a['title'], price: a['price'].toString())).toList().cast<Widget>(),
+              ),
+            );  // snapshot.data  :- get your object which is pass from your downloadData() function
+        }
+      },
     );
+    // return Scaffold(
+    //   backgroundColor: Colors.grey[200],
+    //   appBar: AppBar(
+    //     title: Text('Shopping Devsoc'),
+    //     centerTitle: true,
+    //     backgroundColor: Colors.redAccent,
+    //   ),
+    //   body: Column(
+    //     children: t.map((t) => ShopCard(imgUrl: t['image'], title: t['title'], price: t['price'],)).toList(),
+    //   ),
+    // );
   }
 }
