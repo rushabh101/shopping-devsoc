@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shopping',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      // theme: ThemeData(
+      //   primarySwatch: Colors.white,
+      // ),
       home: MyHomePage(title: 'Shopping App for devsoc'),
     );
   }
@@ -55,21 +55,27 @@ class _MyHomePageState extends State<MyHomePage> {
     return FutureBuilder(
       future: test(), // function where you call your api
       builder: (BuildContext context, AsyncSnapshot snapshot) {  // AsyncSnapshot<Your object type>
-        if( snapshot.connectionState == ConnectionState.waiting){
+        if( snapshot.connectionState == ConnectionState.waiting) {
           return  Center(child: Text('Please wait its loading...'));
-        }else{
+        }
+        else {
           if (snapshot.hasError)
             return Center(child: Text('Error: ${snapshot.error}'));
           else
             return Scaffold(
               backgroundColor: Colors.grey[200],
               appBar: AppBar(
-                title: Text('Shopping Devsoc'),
+                title: Text(
+                  'Shopping Devsoc',
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
                 centerTitle: true,
-                backgroundColor: Colors.redAccent,
+                backgroundColor: Colors.white54,
               ),
               body: ListView(
-                children: snapshot.data.map((a) => ShopCard(imgUrl: a['image'], title: a['title'], price: a['price'].toString())).toList().cast<Widget>(),
+                children: snapshot.data.map((a) => ShopCard(data: a)).toList().cast<Widget>(),
               ),
             );  // snapshot.data  :- get your object which is pass from your downloadData() function
         }
