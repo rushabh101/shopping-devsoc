@@ -27,27 +27,54 @@ class Signin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Signin'),
+        title: Text('Sign In'),
       ),
       body: Center(
 
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () async {
-                await signInWithGoogle();
-                print("aaaaaa  ${FirebaseAuth.instance.currentUser}");
-            },
-              child: Text("signin"),
-            ),
-            Text(
-              'hi',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                ),
+              ),
+              SizedBox(height: 10.0,),
+              TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  //TODO
+                },
+                child: Text("Sign In"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await signInWithGoogle();
+                  print("aaaaaa  ${FirebaseAuth.instance.currentUser}");
+                },
+                child: Text("Sign in with Google"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/signup');
+                },
+                child: Text("Create Account")
+              ),
+            ],
+          ),
         ),
       ),
+
+      // temporary
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/home');

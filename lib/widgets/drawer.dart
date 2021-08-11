@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ShopDrawer extends StatelessWidget {
@@ -20,17 +21,19 @@ class ShopDrawer extends StatelessWidget {
             child: Text('Drawer Header'),
           ),
           ListTile(
-            title: Text('Item 1'),
+            title: Text('Cart'),
+            trailing: Icon(Icons.shopping_cart),
             onTap: () {
               // Update the state of the app.
               // ...
             },
           ),
           ListTile(
-            title: Text('Item 2'),
-            onTap: () {
-              // Update the state of the app.
-              // ...
+            title: Text('Sign Out'),
+            trailing: Icon(Icons.logout),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacementNamed(context, '/');
             },
           ),
         ],
