@@ -23,8 +23,13 @@ class Signin extends StatelessWidget {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+
   @override
   Widget build(BuildContext context) {
+
+    TextEditingController usrnm = new TextEditingController();
+    TextEditingController pswrd = new TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Sign In'),
@@ -37,6 +42,7 @@ class Signin extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextField(
+                controller: usrnm,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email',
@@ -44,6 +50,7 @@ class Signin extends StatelessWidget {
               ),
               SizedBox(height: 10.0,),
               TextField(
+                controller: pswrd,
                 obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -51,15 +58,31 @@ class Signin extends StatelessWidget {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  //TODO
+                onPressed: () async {
+                  bool signin = true;
+                  try {
+                    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: usrnm.text,
+                        password: pswrd.text,
+                    );
+                  } on FirebaseAuthException catch (e) {
+                    signin = false;
+                    if (e.code == 'user-not-found') {
+                      print('No user found for that email.');
+                    } else if (e.code == 'wrong-password') {
+                      print('Wrong password provided for that user.');
+                    }
+                  }
+                  if(signin) {
+                    Navigator.pushReplacementNamed(context, '/home');
+                  }
                 },
                 child: Text("Sign In"),
               ),
               ElevatedButton(
                 onPressed: () async {
                   await signInWithGoogle();
-                  print("aaaaaa  ${FirebaseAuth.instance.currentUser}");
+                  Navigator.pushReplacementNamed(context, '/home');
                 },
                 child: Text("Sign in with Google"),
               ),
@@ -73,15 +96,6 @@ class Signin extends StatelessWidget {
           ),
         ),
       ),
-
-      // temporary
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/home');
-        },
-        tooltip: 'Homepage',
-        child: Icon(Icons.home),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
