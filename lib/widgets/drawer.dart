@@ -30,6 +30,14 @@ class ShopDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            title: Text('Wishlist'),
+            trailing: Icon(Icons.bookmark),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
             title: Text('Sign Out'),
             trailing: Icon(Icons.logout),
             onTap: () async {

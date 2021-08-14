@@ -26,6 +26,9 @@ class SignUp extends StatelessWidget {
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Passowrd is too weak"),
+          ));
         } else if (e.code == 'email-already-in-use') {
           print('The account already exists for that email.');
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -46,6 +49,7 @@ class SignUp extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Created account"),
         ));
+        Navigator.pushReplacementNamed(context, '/home');
       }
     }
     

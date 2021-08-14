@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shopping_devsoc/bloc/search_builder.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shopping',
+      initialRoute: FirebaseAuth.instance.currentUser == null ? '/' : '/home',
       routes: {
         '/': (context) => Signin(),
         '/home': (context) => SearchBuilder(),
