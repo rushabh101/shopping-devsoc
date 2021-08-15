@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_devsoc/bloc/firebase_handler.dart';
 
 class ShopCard extends StatefulWidget {
   const ShopCard({Key? key, required this.data}) : super(key: key);
@@ -12,35 +13,17 @@ class ShopCard extends StatefulWidget {
 }
 
 class _ShopCardState extends State<ShopCard> {
-  bool plus = true;
-
-
-  data() async {
-    Map d = {'cart': false, 'wishlist': false};
-    FirebaseFirestore.instance.collection('cart')
-        .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email).snapshots().forEach((element) {
-      for (QueryDocumentSnapshot snapshot in element.docs) {
-        Map t = snapshot.data() as Map;
-        // print(t);
-        if(t['item'] == widget.data['title']) {
-          d['cart'] = true;
-        }
-      }
-    });
-
-    // print('hiii');
-    return d;
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    FirebaseHandler handler = new FirebaseHandler();
+
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection('cart').where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email).snapshots(),
       builder: (context, snapshot) {
         if(!snapshot.hasData){
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return Card();
         }
         bool inCart = false;
         bool inWishlist = false;
@@ -48,8 +31,6 @@ class _ShopCardState extends State<ShopCard> {
         QuerySnapshot q = snapshot.data as QuerySnapshot;
         List items = q.docs;
         items.forEach((element) {
-          // print(element.data());
-          // print(widget.data['title']);
           if(element.data()['item'] == widget.data['title']) {
             if(element.data()['category'] == 'cart') {
               inCart = true;
@@ -59,8 +40,7 @@ class _ShopCardState extends State<ShopCard> {
             }
           }
         });
-        // print(items[1].data());
-        // print(inCart);
+
         return Card(
             margin: const EdgeInsets.all(6.0),
             child: InkWell(
@@ -104,24 +84,15 @@ class _ShopCardState extends State<ShopCard> {
                               IconButton(
                                 onPressed: () {
                                   if(!inCart) {
-                                    FirebaseFirestore.instance.collection('cart').add({
-                                    'email' : FirebaseAuth.instance.currentUser!.email,
-                                    'item' : widget.data['title'],
-                                    'category' : 'cart',
-                                    });
+                                    handler.addItem(widget.data['title'], 'cart');
+
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text("Added to cart"),
                                     ));
                                   }
                                   else {
-                                    FirebaseFirestore.instance.collection('cart')
-                                      .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
-                                      .where('item', isEqualTo: widget.data['title'])
-                                      .where('category', isEqualTo: 'cart').get().then((querySnapshot) {
-                                        querySnapshot.docs.forEach((element) {
-                                          element.reference.delete();
-                                        });
-                                    });
+                                    handler.deleteItem(widget.data['title'], 'cart');
+
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text("Removed from Cart"),
                                     ));
@@ -132,24 +103,15 @@ class _ShopCardState extends State<ShopCard> {
                               IconButton(
                                 onPressed: () {
                                   if(!inWishlist) {
-                                    FirebaseFirestore.instance.collection('cart').add({
-                                      'email' : FirebaseAuth.instance.currentUser!.email,
-                                      'item' : widget.data['title'],
-                                      'category' : 'wishlist',
-                                    });
+                                    handler.addItem(widget.data['title'], 'wishlist');
+
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text("Added to Wishlist"),
                                     ));
                                   }
                                   else {
-                                    FirebaseFirestore.instance.collection('cart')
-                                      .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
-                                      .where('item', isEqualTo: widget.data['title'])
-                                      .where('category', isEqualTo: 'wishlist').get().then((querySnapshot) {
-                                        querySnapshot.docs.forEach((element) {
-                                          element.reference.delete();
-                                        });
-                                    });
+                                    handler.deleteItem(widget.data['title'], 'wishlist');
+
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text("Removed from Wishlist"),
                                     ));

@@ -62,6 +62,8 @@ class Signin extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   bool signin = true;
+
+                  //Signing in with firebase auth
                   try {
                     UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: usrnm.text,
@@ -91,6 +93,7 @@ class Signin extends StatelessWidget {
                 onPressed: () async {
                   await signInWithGoogle();
 
+                  // Add user if doesnt exist in firestore
                   FirebaseFirestore.instance.collection('users')
                       .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
                       .get().then((querySnapshot) {

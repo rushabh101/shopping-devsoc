@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_devsoc/bloc/firebase_handler.dart';
 
 class ItemPage extends StatelessWidget {
   const ItemPage({Key? key}) : super(key: key);
@@ -55,6 +58,59 @@ class ItemPage extends StatelessWidget {
                 letterSpacing: 2.0,
               ),
             ),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('cart').where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email).snapshots(),
+              builder: (context, snapshot) {
+
+                FirebaseHandler handler = new FirebaseHandler();
+                if(!snapshot.hasData){
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                bool inCart = false;
+                bool inWishlist = false;
+
+                QuerySnapshot q = snapshot.data as QuerySnapshot;
+                List items = q.docs;
+                items.forEach((element) {
+                  if(element.data()['item'] == data['title']) {
+                    if(element.data()['category'] == 'cart') {
+                      inCart = true;
+                    }
+                    if(element.data()['category'] == 'wishlist') {
+                      inWishlist = true;
+                    }
+                  }
+                });
+
+                return Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        if(!inCart) {
+                          handler.addItem(data['title'], 'cart');
+                        }
+                        else {
+                          handler.deleteItem(data['title'], 'cart');
+                        }
+                      },
+                      child: Text(!inCart ? "Add to Cart" : "Remove from Cart")
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          if(!inWishlist) {
+                            handler.addItem(data['title'], 'wishlist');
+                          }
+                          else {
+                            handler.deleteItem(data['title'], 'wishlist');
+                          }
+                        },
+                        child: Text(!inWishlist ? "Add to Wishlist" : "Remove from Wishlist")
+                    ),
+                  ],
+                );
+              }),
           ],
         ),
       ),
