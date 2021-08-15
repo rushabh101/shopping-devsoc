@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,6 +19,7 @@ class Signin extends StatelessWidget {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+
 
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
@@ -88,6 +90,18 @@ class Signin extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   await signInWithGoogle();
+
+                  FirebaseFirestore.instance.collection('users')
+                      .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
+                      .get().then((querySnapshot) {
+                    print(querySnapshot.docs);
+                    if(querySnapshot.docs.isEmpty) {
+                      FirebaseFirestore.instance.collection('users').add({
+                        'email' : FirebaseAuth.instance.currentUser!.email,
+                      });
+                    }
+                  });
+
                   Navigator.pushReplacementNamed(context, '/home');
                 },
                 child: Text("Sign in with Google"),

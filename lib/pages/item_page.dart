@@ -20,9 +20,10 @@ class ItemPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(
-              child: CircleAvatar(
-                radius: 40.0,
-                backgroundImage: NetworkImage(data['image']),
+              child: Image(
+                width: 160,
+                height: 160,
+                image: NetworkImage(data['image']),
               ),
             ),
             Divider(
@@ -40,7 +41,7 @@ class ItemPage extends StatelessWidget {
             ),
             SizedBox(height: 10.0),
             Text(
-              '${data['price']}',
+              '\$${data['price']}',
               style: TextStyle(
                 color: Colors.black,
                 letterSpacing: 2.0,

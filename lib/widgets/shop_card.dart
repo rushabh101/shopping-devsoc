@@ -34,7 +34,6 @@ class _ShopCardState extends State<ShopCard> {
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection('cart').where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email).snapshots(),
       builder: (context, snapshot) {

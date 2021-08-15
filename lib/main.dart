@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shopping_devsoc/bloc/search_builder.dart';
+import 'package:shopping_devsoc/pages/cart.dart';
 import 'package:shopping_devsoc/pages/item_page.dart';
 import 'package:shopping_devsoc/pages/signin.dart';
 import 'package:shopping_devsoc/pages/signup.dart';
+import 'package:shopping_devsoc/pages/wishlist.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +26,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => SearchBuilder(),
         '/view': (context) => ItemPage(),
         '/signup': (context) => SignUp(),
+        '/cart' : (context) => CartBuilder(),
+        'wishlist' : (context) => WishlistBuilder(),
       }
     );
   }

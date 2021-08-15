@@ -22,19 +22,24 @@ class ShopDrawer extends StatelessWidget {
             child: Text(username!),
           ),
           ListTile(
+            title: Text('Home'),
+            trailing: Icon(Icons.home),
+            onTap: () {
+              Navigator.pushNamed(context, '/home');
+            },
+          ),
+          ListTile(
             title: Text('Cart'),
             trailing: Icon(Icons.shopping_cart),
             onTap: () {
-              // Update the state of the app.
-              // ...
+              Navigator.pushNamed(context, '/cart');
             },
           ),
           ListTile(
             title: Text('Wishlist'),
             trailing: Icon(Icons.bookmark),
             onTap: () {
-              // Update the state of the app.
-              // ...
+              Navigator.pushNamed(context, 'wishlist');
             },
           ),
           ListTile(
