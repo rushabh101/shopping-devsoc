@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -35,6 +36,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
+    StreamController<int> filterController = StreamController<int>();
+    Stream<int> filter = filterController.stream;
+
     return Scaffold(
         backgroundColor: Colors.grey[200],
         drawer: ShopDrawer(),
@@ -54,12 +58,65 @@ class _HomeState extends State<Home> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(isSearching ? Icons.cancel : Icons.search),
               onPressed: () {
                 setState(() {
                   isSearching = !isSearching;
                 });
               },
+            ),
+            IconButton(
+              onPressed: () {
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => Dialog(
+                    child: Container(
+                      padding: EdgeInsets.all(8.0),
+                      height: 250,
+                      child: Column(
+                        children: [
+                          Text("Sort By:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          SizedBox(height: 10,),
+                          TextButton(
+                            onPressed: () {
+                              filterController.add(1);
+                              Navigator.pop(context, 'OK');
+                            },
+                            child: Text("Price: Increasing")
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                filterController.add(2);
+                                Navigator.pop(context, 'OK');
+                              },
+                              child: Text("Price: Decreasing")
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                filterController.add(3);
+                                Navigator.pop(context, 'OK');
+                              },
+                              child: Text("Name: A to Z")
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                filterController.add(4);
+                                Navigator.pop(context, 'OK');
+                              },
+                              child: Text("Name: Z to A")
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                );
+              },
+              icon: Icon(Icons.filter_alt)
             ),
           ],
           centerTitle: true,
@@ -69,7 +126,7 @@ class _HomeState extends State<Home> {
           future: test(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if(snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: Text('Please wait its loading...'));
+              return CircularProgressIndicator();
             }
             else {
               if (snapshot.hasError)
@@ -82,8 +139,43 @@ class _HomeState extends State<Home> {
                     final match = new RegExp(state.replaceAll(new RegExp(r"\s+"), "").toLowerCase());
                     dtemp = dtemp.where((i) => match.hasMatch(i['title'].replaceAll(new RegExp(r"\s+"), "").toLowerCase())).toList();
                   }
-                  return ListView(
-                    children: dtemp.map((a) => ShopCard(data: a)).toList().cast<Widget>(),
+                  return StreamBuilder<Object>(
+                    stream: filter,
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData) {
+                        switch(snapshot.data) {
+                          case 1:
+                            {
+                              dtemp.sort((a, b) =>
+                                  a['price'].compareTo(b['price']) as int);
+                            }
+                            break;
+                          case 2:
+                            {
+                              dtemp.sort((a, b) =>
+                                  b['price'].compareTo(a['price']) as int);
+                            }
+                            break;
+                          case 3:
+                            {
+                              dtemp.sort((a, b) =>
+                                  a['title'].compareTo(b['title']) as int);
+                            }
+                            break;
+                          case 4:
+                            {
+                              dtemp.sort((a, b) =>
+                                  b['title'].compareTo(a['title']) as int);
+                            }
+                            break;
+                        }
+                      }
+                      return GridView.count(
+                        childAspectRatio: 0.75,
+                        crossAxisCount: 2,
+                        children: dtemp.map((a) => ShopCard(data: a)).toList().cast<Widget>(),
+                      );
+                    }
                   );
                 });
               }
@@ -91,6 +183,5 @@ class _HomeState extends State<Home> {
           },
         )
     );
-
   }
 }

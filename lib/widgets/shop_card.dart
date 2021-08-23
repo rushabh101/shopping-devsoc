@@ -50,80 +50,73 @@ class _ShopCardState extends State<ShopCard> {
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       padding: const EdgeInsets.all(4.0),
                       child: Image.network(widget.data['image']),
-                      height: 100,
-                      width: 100,
+                      height: 127,
+                      width: 127,
                     ),
-                    Flexible(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: 10,),
-                          Text(
-                            widget.data['title'],
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                          SizedBox(height: 5,),
-                          Text(
-                            '\$${widget.data['price'].toString()}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  if(!inCart) {
-                                    handler.addItem(widget.data['title'], 'cart');
-
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text("Added to cart"),
-                                    ));
-                                  }
-                                  else {
-                                    handler.deleteItem(widget.data['title'], 'cart');
-
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text("Removed from Cart"),
-                                    ));
-                                  }
-                                },
-                                icon: Icon(!inCart ? Icons.add : Icons.indeterminate_check_box),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  if(!inWishlist) {
-                                    handler.addItem(widget.data['title'], 'wishlist');
-
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text("Added to Wishlist"),
-                                    ));
-                                  }
-                                  else {
-                                    handler.deleteItem(widget.data['title'], 'wishlist');
-
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text("Removed from Wishlist"),
-                                    ));
-                                  }
-
-                                },
-                                icon: Icon(!inWishlist ? Icons.bookmark : Icons.bookmarks_rounded),
-                              ),
-                            ],
-                          )
-                        ],
+                    SizedBox(height: 15,),
+                    Text(
+                      widget.data['title'],
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    SizedBox(height: 5,),
+                    Text(
+                      '\$${widget.data['price'].toString()}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10
                       ),
+                    ),
+                    SizedBox(height: 5,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            if(!inCart) {
+                              handler.addItem(widget.data['title'], 'cart');
+
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Added to cart"),
+                              ));
+                            }
+                            else {
+                              handler.deleteItem(widget.data['title'], 'cart');
+
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Removed from Cart"),
+                              ));
+                            }
+                          },
+                          icon: Icon(!inCart ? Icons.add : Icons.indeterminate_check_box),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if(!inWishlist) {
+                              handler.addItem(widget.data['title'], 'wishlist');
+
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Added to Wishlist"),
+                              ));
+                            }
+                            else {
+                              handler.deleteItem(widget.data['title'], 'wishlist');
+
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Removed from Wishlist"),
+                              ));
+                            }
+
+                          },
+                          icon: Icon(!inWishlist ? Icons.bookmark : Icons.bookmarks_rounded),
+                        ),
+                      ],
                     ),
                   ],
                 ),
