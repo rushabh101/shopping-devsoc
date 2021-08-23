@@ -20,6 +20,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shopping',
+      theme: ThemeData(
+        // Define the default brightness and colors.
+        brightness: Brightness.light,
+        primaryColor: Colors.lightBlue[800],
+        accentColor: Colors.cyan[600],
+
+      ),
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/' : '/home',
       routes: {
         '/': (context) => Signin(),

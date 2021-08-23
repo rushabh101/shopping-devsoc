@@ -55,7 +55,7 @@ class ItemPage extends StatelessWidget {
               '${data['description']}',
               style: TextStyle(
                 color: Colors.grey,
-                letterSpacing: 2.0,
+                letterSpacing: 0.5,
               ),
             ),
             StreamBuilder(

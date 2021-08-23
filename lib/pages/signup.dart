@@ -89,13 +89,25 @@ class SignUp extends StatelessWidget {
                   labelText: 'Confirm Password',
                 ),
               ),
+              SizedBox(
+                height: 20.0,
+              ),
               ElevatedButton(
                 onPressed: () async {
-                  if(passwordConfirm.text == password.text) {
-                    createAccount(username.text, password.text);
+                  if(username.text == "" || password.text == "" || passwordConfirm.text == "") {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Please fill in all the fields"),
+                    ));
                   }
                   else {
-                    print("passwords do not match");
+                    if(passwordConfirm.text == password.text) {
+                      createAccount(username.text, password.text);
+                    }
+                    else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Passwords do not match"),
+                      ));
+                    }
                   }
                 },
                 child: Text("Sign Up"),

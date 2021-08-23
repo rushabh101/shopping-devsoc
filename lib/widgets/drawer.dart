@@ -19,7 +19,7 @@ class ShopDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
-            child: Text(username!),
+            child: Text('Welcome! ${username!}'),
           ),
           ListTile(
             title: Text('Home'),
@@ -45,10 +45,28 @@ class ShopDrawer extends StatelessWidget {
           ListTile(
             title: Text('Sign Out'),
             trailing: Icon(Icons.logout),
-            onTap: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacementNamed(context, '/');
-            },
+            onTap: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text('Sign out'),
+                content: const Text('Are you sure you want to sign out?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                    Navigator.pop(context);
+                  },
+                    child: Text('cancel')
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.pushReplacementNamed(context, '/');
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

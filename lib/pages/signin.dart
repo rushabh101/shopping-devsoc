@@ -59,35 +59,67 @@ class Signin extends StatelessWidget {
                   labelText: 'Password',
                 ),
               ),
+              SizedBox(
+                height: 20.0,
+              ),
               ElevatedButton(
                 onPressed: () async {
                   bool signin = true;
+                  bool valid = true;
 
-                  //Signing in with firebase auth
-                  try {
-                    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  if(usrnm.text == "" || pswrd.text == "") {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Please enter email and password"),
+                    ));
+                  }
+                  else {
+                    try {
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance.signInWithEmailAndPassword(
                         email: usrnm.text,
                         password: pswrd.text,
-                    );
-                  } on FirebaseAuthException catch (e) {
-                    signin = false;
-                    if (e.code == 'user-not-found') {
-                      print('No user found for that email.');
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("No user found for that email"),
-                      ));
-                    } else if (e.code == 'wrong-password') {
-                      print('Wrong password provided for that user.');
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("Incorrect Password"),
-                      ));
+                      );
+                    } on FirebaseAuthException catch (e) {
+                      signin = false;
+                      print(e.code);
+                      if (e.code == 'user-not-found') {
+                        print('No user found for that email.');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("No user found for that email"),
+                        ));
+                      } else if (e.code == 'wrong-password') {
+                        print('Wrong password provided for that user.');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Incorrect Password"),
+                        ));
+                      } else if (e.code == 'invalid-email') {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Invalid email"),
+                        ));
+                      }
                     }
                   }
+
+                  //Signing in with firebase auth
+                  if(valid) {
+
+                  }
+
                   if(signin) {
                     Navigator.pushReplacementNamed(context, '/home');
                   }
                 },
                 child: Text("Sign In"),
+              ),
+
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/signup');
+                },
+                child: Text("Create Account")
+              ),
+              SizedBox(
+                height: 10.0,
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -108,12 +140,6 @@ class Signin extends StatelessWidget {
                   Navigator.pushReplacementNamed(context, '/home');
                 },
                 child: Text("Sign in with Google"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
-                },
-                child: Text("Create Account")
               ),
             ],
           ),
