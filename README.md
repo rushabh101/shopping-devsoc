@@ -8,6 +8,8 @@ GDrive link for apk: https://drive.google.com/file/d/1hcqU3ZIPS_qopuutv3OADq9Mio
 
 appetize.io link (buggy) : https://appetize.io/app/5pwja8151kryhmrykq132c828g
 
+demo video link: https://drive.google.com/file/d/1_a3vlLmu_NDIG61_VlMujvlNZOqYkvnK/view?usp=sharing
+
 # Overview
 
 - This app was my first time using flutter, it was quite easy to pick up and use as compared to native android.
